@@ -16,4 +16,4 @@ print(epsilon_string)
 print(float(literal_eval(gamma_string)))
 print(float(literal_eval(epsilon_string)))
 
-print('Power consumption =', float(literal_eval(gamma_string))*float(literal_eval(epsilon_string)))
+print('Power consumption =', int(float(literal_eval(gamma_string))*float(literal_eval(epsilon_string))))
