@@ -3,25 +3,17 @@ import pandas as pd
 from ast import literal_eval
 
 rawDataDF = pd.read_csv('binary_report.csv')
+# rawDataDF = pd.read_csv('test_data.csv')
 bit_values = list(rawDataDF.columns)
-avg_value_dict = {bit_val: rawDataDF[bit_val].mean() for bit_val in bit_values}
-gamma_dict   = {bit_val: int(np.round(float(avg_value_dict[bit_val]))) for bit_val in bit_values}
-epsilon_dict = {bit_val: int(np.round(float(1 - avg_value_dict[bit_val]))) for bit_val in bit_values}
-list_gamma   = [int(np.round(float(avg_value_dict[bit_val]))) for bit_val in bit_values]
-list_epsilon = [int(np.round(float(1 - avg_value_dict[bit_val]))) for bit_val in bit_values]
-
-gamma_string   = '0b' + ''.join(map(str, list_gamma))
-epsilon_string = '0b' + ''.join(map(str, list_epsilon))
-print(gamma_string)
-print(epsilon_string)
 
 oxyDF = rawDataDF.copy(deep=True)
 co2DF = rawDataDF.copy(deep=True)
 
-print('Oxygen regeneration')
+# print('Oxygen regeneration')
 for val in bit_values:
-    print('Iteration', val)
     avg_value = oxyDF[val].mean()
+    if avg_value == 0.5:
+        avg_value += 0.1
     most_common = int(np.round(avg_value))
     oxyReducedDF = oxyDF.loc[oxyDF[val] == most_common]
     if oxyReducedDF.drop_duplicates(subset = bit_values).shape[0] == 1:
@@ -33,9 +25,9 @@ for val in bit_values:
 oxy_string = '0b' + ''.join([str(integer) for integer in oxy_bits])
 print(oxy_string)
 
-print('CO2 scrubbing')
+# print('CO2 scrubbing')
 for val in bit_values:
-    print('Iteration', val)
+    # print('Iteration', val)
     avg_value = co2DF[val].mean()
     if avg_value == 0.5:
         avg_value += 0.1
@@ -48,5 +40,6 @@ for val in bit_values:
         co2DF = co2ReducedDF
 
 co2_string = '0b' + ''.join([str(integer) for integer in co2_bits])
+print(co2_string)
 
 print('Life support rating =', int(float(literal_eval(oxy_string))*float(literal_eval(co2_string))))
